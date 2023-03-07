@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import { Dimensions, StatusBar, StyleSheet, Text, View, TextInput, ScrollView, KeyboardAvoidingView, ActivityIndicator, Keyboard, Touchable } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import * as Animatable  from 'react-native-animatable';
@@ -10,6 +10,7 @@ import { API_LINK, ASYNC_LOGIN_KEY, SMALL_LOGO_RATIO } from '../constants/String
 import { showMessage } from 'react-native-flash-message';
 import { prepLoggedInUserData, storeAsyncData } from '../utils';
 import { getLogoDimensions } from '../utils';
+import messaging from "@react-native-firebase/messaging";
 
 
 const Login = ({navigation, reduxUser, reduxStoreUser}) => {
@@ -20,13 +21,31 @@ const Login = ({navigation, reduxUser, reduxStoreUser}) => {
     
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
+    const [token, settoken] = useState('');
 
     const [phoneError, setPhoneError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
 
 
+    const getFCMToken = async () => {
+        try {
+          const token1 = await messaging().getToken();
+          console.log("*****************************");
+          console.log("FCM token: "+token1);
+          console.log("*****************************");
+          settoken(token1)
+        } catch (e) {
+          console.log(error);
+        }
+      };
+
+      useEffect(()=>{
+        getFCMToken();
+    
+    },[]);
     const processLogin = () => {
 
+        console.log("Hello")
         
         var valid = true;
         
@@ -61,6 +80,7 @@ const Login = ({navigation, reduxUser, reduxStoreUser}) => {
         {
             setApiStatus(true);
             Keyboard.dismiss();
+            console.log(API_LINK+'login');
             fetch(API_LINK+'login',{
                 method : 'POST',
                 headers : {
@@ -69,8 +89,9 @@ const Login = ({navigation, reduxUser, reduxStoreUser}) => {
                     mode: 'cors'
                 },
                 body: JSON.stringify({
-                    email : phone,
-                    password: password
+                    phone : phone,
+                    password: password,
+                   token: token
                     
                      })
                  })

@@ -5,11 +5,12 @@ import * as Animatable  from 'react-native-animatable';
 import { connect } from 'react-redux';
 import { storeUser } from '../Store/user/actions';
 import { COLORS } from '../constants/Colors';
-import { FORGOTPASSWORDSCREEN, LOGINSCREEN, REGISTERSCREEN, RESETPASSWORD } from '../constants/Screens';
+import { FORGOTPASSWORDSCREEN, LOGINSCREEN, REGISTERSCREEN, RESETPASSWORD, CHANGEPASSWORDSCREEN } from '../constants/Screens';
 import { API_LINK, ASYNC_LOGIN_KEY, SMALL_LOGO_RATIO } from '../constants/Strings';
 import { showMessage } from 'react-native-flash-message';
 import { prepLoggedInUserData, storeAsyncData } from '../utils';
 import { getLogoDimensions } from '../utils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const ForgotPassword = ({navigation, reduxUser, reduxStoreUser}) => {
@@ -24,28 +25,33 @@ const ForgotPassword = ({navigation, reduxUser, reduxStoreUser}) => {
     const [phoneError, setPhoneError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
 
-    const [showModal, setShowModal] = useState(false);
+    // const [showModal, setShowModal] = useState(false);
     const [modalText, setModalText] = useState('OTP send on your email id. Please check your mailbox.');
     const [otp, setOtp] = useState('');
     const [otpError, setOtpError] = useState(false);
 
+    const goChangePasswordScreen = () => {
+        navigation.navigate(CHANGEPASSWORDSCREEN);
+    }
 
     const processLogin = () => {
 
+        console.log("***********phone:"+phone);
+        
         var valid = true;
         
         setApiStatus(true);
 
         if(phone.trim() == '')
         {
-            setPhoneError('Please enter valid email id');
+            setPhoneError('Please enter valid phone number');
             valid = false;
         }
-        // else if(phone.trim().length != 10)
-        // {
-        //     setPhoneError('Phone length should be 10 characters');
-        //     valid = false;
-        // }
+        else if(phone.trim().length != 10)
+        {
+            setPhoneError('Phone length should be 10 characters');
+            valid = false;
+        }
         else{
             setPhoneError(false);
         }
@@ -56,8 +62,8 @@ const ForgotPassword = ({navigation, reduxUser, reduxStoreUser}) => {
         {
 
             Keyboard.dismiss();
-            console.log(API_LINK+'forget')
-            fetch(API_LINK+'forget',{
+            console.log(API_LINK+'forgetPassSendOTP')
+            fetch(API_LINK+'forgetPassSendOTP',{
                 method : 'POST',
                 headers : {
                     'Accept': 'application/json',
@@ -65,7 +71,7 @@ const ForgotPassword = ({navigation, reduxUser, reduxStoreUser}) => {
                     mode: 'cors'
                 },
                 body: JSON.stringify({
-                    user : phone,
+                    phone : phone,
                      })
                  })
                 .then((response) => response.json())
@@ -86,8 +92,10 @@ const ForgotPassword = ({navigation, reduxUser, reduxStoreUser}) => {
                         type: "success",
                       });
                       */
+                      navigation.navigate(CHANGEPASSWORDSCREEN,{reduxUser: reduxUser,name:989898});
+                      AsyncStorage.setItem("phone",phone);
                       setModalText(responseData.message)
-                      setShowModal(true);
+                    //   setShowModal(true);
 
                    }
                   else
@@ -215,9 +223,12 @@ const ForgotPassword = ({navigation, reduxUser, reduxStoreUser}) => {
                 <Text style={styles.subtitle}>Recover your password</Text>
 
                 <View style={styles.form}> 
-                    
-                    <TextInput placeholder="Enter Your Email ID..." style={styles.input} keyboardType = "email-address" value={phone} onChangeText={text => setPhone(text)}  />
-                    {(phoneError) ? <View><Text style={styles.error}>{phoneError}</Text></View>: <></>}
+                <Text style={styles.phone}>Enter Mobile No:</Text>
+                <TextInput placeholder="Your Phone Number..." style={styles.input} keyboardType = 'numeric' value={phone} onChangeText={text => setPhone(text)}  />
+
+                {/* <Text style={styles.subtitle}>Enter Mobile No: </Text>
+                    <TextInput placeholder="Enter Your Email ID..." style={styles.input} keyboardType = "numeric" value={phone} onChangeText={text => setPhone(text)}  /> */}
+                    {(phoneError) ? <View><Text style={styles.error} >{phoneError}</Text></View>: <></>}
                     
                 </View>
                 
@@ -261,7 +272,7 @@ const ForgotPassword = ({navigation, reduxUser, reduxStoreUser}) => {
         </ScrollView>
         </View>
 
-        <Modal visible={showModal} style={styles.modal} animationType="slide" transparent={true}>
+        {/* <Modal visible={showModal} style={styles.modal} animationType="slide" transparent={true}>
                      <View style={styles.modalBody}>
 
                         <Text style={styles.title}>OTP Verification</Text>
@@ -282,7 +293,7 @@ const ForgotPassword = ({navigation, reduxUser, reduxStoreUser}) => {
 
                         </View>
                      </View>
-        </Modal>
+        </Modal> */}
 
            
         </>

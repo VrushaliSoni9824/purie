@@ -168,6 +168,9 @@ const Wallet = ({updateWalletBalance, navigation}) => {
 
 
 const showWalletHistory = () => {
+    console.log("**************");
+    console.log({user_id: reduxUser.customer.userId});
+    console.log("**************");
     fetch(API_LINK+'wallet_history',{
         method : 'POST',
         headers : {

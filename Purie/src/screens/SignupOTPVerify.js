@@ -4,16 +4,17 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import * as Animatable  from 'react-native-animatable';
 import { connect } from 'react-redux';
 import { COLORS } from '../constants/Colors';
-import { FORGOTPASSWORDSCREEN, LOGINSCREEN, SIGNUPOTPVERIFY } from '../constants/Screens';
+import { FORGOTPASSWORDSCREEN, LOGINSCREEN } from '../constants/Screens';
 import { API_LINK, ASYNC_LOGIN_KEY, SMALL_LOGO_RATIO } from '../constants/Strings';
 import { showMessage } from 'react-native-flash-message';
 import { prepLoggedInUserData, storeAsyncData } from '../utils';
 import { storeUser } from '../Store/user/actions';
 import { getLogoDimensions } from '../utils';
+import OTPInputView from '@twotalltotems/react-native-otp-input'
 
 
 
-const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
+const SignupOTPVerify = ({navigation,route,  reduxUser, reduxStoreUser}) => {
 
     const [apiStatus, setApiStatus] = useState(false);
     
@@ -29,6 +30,8 @@ const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
     const [phoneError, setPhoneError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
 
+    const [otp, setotp] = useState('');
+    const [otpError, setotpError] = useState(false);
 
 
     const processSignup = () => {
@@ -36,55 +39,27 @@ const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
         var valid = true;
         // setApiStatus(true);
 
-
-        if(name.trim() == '')
+        const loggedInUser = route.params.loggedInUser;
+        console.log("ScreeenDetails:"+route.params.catName);
+        console.log("===================");
+        console.log(JSON.stringify(route.params.loggedInUser));
+        console.log("===================");
+        if(otp.trim() == '')
         {
-            setNameError("Please enter name");
+            setotpError("Please enter otp");
             valid = false;
         }
         else
         {
-            setNameError(false);
+            setotpError(false);
         }
 
-        if(email.trim() == '')
-        {
-            setemailError('Please enter email id ');
-            valid = false;
-        }
-        else
-        {
-            setemailError(false);
-        }
-
-        if(phone.trim() == '')
-        {
-            setPhoneError('Please enter phone number');
-            valid = false;
-        }
-        else if(phone.trim().length != 10)
-        {
-            setPhoneError('Phone length should be 10 characters');
-            valid = false;
-        }
-        else{
-            setPhoneError(false);
-        }
-
-        if(password.trim() == '')
-        {
-            setPasswordError('Please enter password');
-            valid = false;
-        }
-        else{
-            setPasswordError(false);
-        }
 
         if(valid)
         {
 
             Keyboard.dismiss();
-            fetch(API_LINK+'register',{
+            fetch(API_LINK+'otpverify',{
                 method : 'POST',
                 headers : {
                     'Accept': 'application/json',
@@ -92,17 +67,15 @@ const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
                     mode: 'cors'
                 },
                 body: JSON.stringify({
-                    email : email,
-                    password: password,
-                    name:name,
-                    phone:phone
-                    
+                    phone : loggedInUser.phone,
+                    otp: otp 
                      })
                  })
                 .then((response) => response.json())
                 .then((responseData) => {
-                   
+                    console.log("=================response========================");
                     console.log('Regsiter RESPONSE:',responseData);
+                    console.log("===================");
                   
                    
                   if(responseData.status == 'Success')
@@ -113,20 +86,17 @@ const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
                     setEmail('');
 
                     showMessage({
-                        message: "Registration successful ! ",
-                        description: "Please verify your mobile number",
+                        message: "Success",
+                        description: responseData.message,
                         type: "success",
                       });
 
                      
-                      const loggedInUser = prepLoggedInUserData(responseData.user);
-                      console.log("========before===========");
-                      console.log(JSON.stringify(loggedInUser));
-                      console.log("===================");
+                    //   const loggedInUser = prepLoggedInUserData(responseData.user);
+
                     
-                    //   reduxStoreUser(loggedInUser);
-                    //   storeAsyncData(ASYNC_LOGIN_KEY,loggedInUser);
-                      goToOtpScreen(loggedInUser);
+                      reduxStoreUser(loggedInUser);
+                      storeAsyncData(ASYNC_LOGIN_KEY,loggedInUser);
                     
                     
                    }
@@ -177,10 +147,6 @@ const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
 
     }
 
-    const goToOtpScreen = (loggedInUser) => {
-        navigation.navigate(SIGNUPOTPVERIFY,{catName: "hello",loggedInUser: loggedInUser});
-    }
-
     const goToForgotPassword = () => {
         navigation.navigate(FORGOTPASSWORDSCREEN);
     }
@@ -203,25 +169,27 @@ const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
             </View>
 
             <Animatable.View style={styles.footer} animation="fadeInUpBig" > 
-                <Text style={styles.title}>Signup for Purie.</Text>
-                <Text style={styles.subtitle}>Get start to access the products.</Text>
+                <Text style={styles.title}>Mobile number varification.</Text>
+                <Text style={styles.subtitle}>Varify your mobile number at Purie.</Text>
 
                 <View style={styles.form}> 
-                    <Text style={styles.phone}>Name</Text>
-                    <TextInput placeholder="Your Name..." style={styles.input} keyboardType = 'default' value={name} onChangeText={text => setName(text)} />
-                    {(nameError) ? <View><Text style={styles.error}>{nameError}</Text></View>: <></>}
-
-                    <Text style={styles.phone}>Email</Text>
-                    <TextInput placeholder="Your Email.." style={styles.input} keyboardType = 'email-address' value={email} onChangeText={text => setEmail(text)} />
-                    {(emailError) ? <View><Text style={styles.error}>{emailError}</Text></View>: <></>}
-
-                    <Text style={styles.phone}>Phone Numner</Text>
-                    <TextInput placeholder="Your Phone Number..." style={styles.input} keyboardType = 'numeric' value={phone} onChangeText={text => setPhone(text)} />
-                    {(phoneError) ? <View><Text style={styles.error}>{phoneError}</Text></View>: <></>}
-
-                    <Text style={styles.phone}>Password</Text>
-                    <TextInput placeholder="Your Password" style={styles.input} keyboardType = 'default' secureTextEntry={true} value={password} onChangeText={text => setPassword(text)} />
-                    {(passwordError) ? <View><Text style={styles.error}>{passwordError}</Text></View>: <></>}
+                    
+                <OTPInputView
+                code={otp} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+    onCodeChanged = {code => {
+        setotp(code);
+        console.log("Code:"+code)
+    }}
+      style={{ width: 300, height: 80, alignSelf: 'center' }}
+      pinCount={4}
+      autoFocusOnLoad={false}
+  
+      codeInputFieldStyle={styles.inputFeilds}
+      codeInputHighlightStyle={styles.inputFeildsFocus}
+      onCodeFilled = {(code) => {
+        
+    }}
+    />
                     
                 </View>
                 
@@ -232,7 +200,7 @@ const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
                         (!apiStatus)
                         ?
                         <TouchableOpacity onPress={processSignup}>
-                        <Text style={styles.getstartText}>Signup</Text>
+                        <Text style={styles.getstartText}>Verify otp</Text>
                     </TouchableOpacity>
                         :
 
@@ -245,7 +213,7 @@ const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
 
 
                     <View style={[styles.row, styles.sectionHeight]}>
-                        <View style={[styles.col, styles.ac]}>
+                        {/* <View style={[styles.col, styles.ac]}>
                                 
                                 <TouchableOpacity onPress={goToLogin}>
                                     <Text style={styles.link}>Login</Text>
@@ -256,7 +224,7 @@ const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
                             <TouchableOpacity onPress={goToForgotPassword}>
                                     <Text style={styles.link}>Forgot Password?</Text>
                                 </TouchableOpacity>
-                        </View>
+                        </View> */}
                     </View>
 
                 
@@ -380,7 +348,26 @@ const styles = StyleSheet.create({
         padding:16,
         fontSize:18,
         fontWeight:'600',
-    }
+    },
+    borderStyleBase: {
+        width: 30,
+        height: 45
+      },
+    
+      borderStyleHighLighted: {
+        borderColor: "#03DAC6",
+      },
+    
+      underlineStyleBase: {
+        width: 30,
+        height: 45,
+        borderWidth: 0,
+        borderBottomWidth: 1,
+      },
+    
+      underlineStyleHighLighted: {
+        borderColor: "#03DAC6",
+      }
     
 })
 
@@ -398,4 +385,4 @@ const mapDispatchToProps = dispatch => {
     };
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(Signup);
+export default connect(mapStateToProps,mapDispatchToProps)(SignupOTPVerify);

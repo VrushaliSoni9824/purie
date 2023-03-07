@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { StyleSheet, Text, View, Image, ScrollView, FlatList, ActivityIndicator, Modal, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Image, ScrollView, FlatList, ActivityIndicator, Modal, Pressable,useWindowDimensions } from 'react-native'
 import { SliderBox } from "react-native-image-slider-box";
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Icon } from 'react-native-elements'
@@ -14,6 +14,10 @@ import MemberHeader from "../common/MemberHeader";
 import { loadPlans } from "../Store/subscribe/actions";
 import { updateWallet } from '../Store/user/actions';
 import { SafeAreaView } from "react-native-safe-area-context";
+import OTPInputView from '@twotalltotems/react-native-otp-input'
+
+import RenderHtml, { HTMLElementModel, HTMLContentModel } from 'react-native-render-html';
+
 
 const images = [
     'https://www.purie.in/images/slide-1.png',
@@ -21,12 +25,9 @@ const images = [
     
 
 ]
-
-
-
-
 const Home = ({ navigation, reduxUser, reduxLoadPlans, updateWalletBalance }) => {
 
+    const { width } = useWindowDimensions();
     const [isLoading, setLoading] = useState(true);
     const [isLoadingImage, setisLoadingImage] = useState(false);
     const [data, setData] = useState("");
@@ -38,7 +39,16 @@ const Home = ({ navigation, reduxUser, reduxLoadPlans, updateWalletBalance }) =>
     const [mostSellingProducts, setmostSellingProducts] = useState(false);
     const [categories, setCategories] = useState(false);
     const [wallet, setWallet] = useState(false);
+
    // const [isHomePageReady, setisHomePageReady] = useState(false);
+
+   var source = {
+    html: `
+  <p style='text-align:center;'>
+    <b>Hello</b> World!
+  </p>`
+  };
+ 
 
    const getadvertisement = async () => {
 //     try {
@@ -78,7 +88,7 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
  }
 
  useEffect(() => {
-   getadvertisement();
+//    getadvertisement(); 
  },[]);
 
 
@@ -249,7 +259,13 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
         );
     }
 
-
+    // const source = {
+    //     html: `
+    //   <p style='text-align:center;'>
+    //     Hello World!
+    //   </p>`
+    //   };
+      
     const renderCategory = (item) => {
         console.log('CAT VIEw');
         return (
@@ -280,7 +296,7 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
                 console.log("aaaaaaaaaaa")
                 setModalVisible(!modalVisible)}}
             >
-
+        
             <View style={{flex:1,width:'100%'}}>
                 <View style={{flex:0.02,alignItems:'flex-end'}}>
                 <Pressable
@@ -336,9 +352,17 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
 {/* ========= close modal */}
         <View>
             <MemberHeader title="Purie"/> 
+
+            {/* <View style={{backgroundColor:'#000'}}>
+            <RenderHtml
+      contentWidth={width}
+      source={source}
+    />
+            </View> */}
+            
             <ScrollView showsVerticalScrollIndicator={false}>
 
-
+            
                 <SliderBox images={images}
                     dotColor="black"
                     autoplay
@@ -355,6 +379,7 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
                     </View>
                 :
                 <>
+               
                 <View style={styles.categorycontainer}>
                     <Text style={styles.catTitle}>Most Popular Category</Text>
                     <View style={styles.categoryrow}>

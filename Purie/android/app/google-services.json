@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "553919480488",
+    "project_id": "purie-9296b",
+    "storage_bucket": "purie-9296b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553919480488:android:2109a8ff774acfe9f0b89d",
+        "android_client_info": {
+          "package_name": "com.purie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "553919480488-l715aertcueleqk5b03mtshqg5vpuoi5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.purie",
+            "certificate_hash": "12c06aef1b0c375e41ef66097740516fcc5f5eab"
+          }
+        },
+        {
+          "client_id": "553919480488-h5a8me3a68306ijtickac80ih0dpi7aq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGtJtesrgvYZVGVEDA58KHS-4M0HDyHlY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "553919480488-h5a8me3a68306ijtickac80ih0dpi7aq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

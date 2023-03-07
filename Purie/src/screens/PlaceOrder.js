@@ -20,13 +20,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const PlaceOrder = ({ navigation, reduxUser, reduxCart, updateWalletBalance}) => {
 
 
-    const [apiStatus, setApiStatus] = useState(false);
+    const [apiStatus, setApiStatus] = useState(0);
+    const [isLoading, setLoading] = useState(false);
     //const [first, setfirst] = useState(second);
     const dispatch = useDispatch();
 
     const cartObject = reduxCart.cart.map((item) => ({key:item.id, id:item.id, name: item.name, image: item.image, rate: item.rate, qty: item.qty }));
-    console.log(`cartObject`, cartObject);
+    // console.log(`cartObject`, cartObject);
 
+    useEffect( () => {
+        console.log(isLoading);
+    }, [isLoading]);
 
     const validateBalance = () => {
         if(parseInt(reduxCart.total) > parseInt(reduxUser.walletBalance))
@@ -50,9 +54,11 @@ const PlaceOrder = ({ navigation, reduxUser, reduxCart, updateWalletBalance}) =>
   
     const processAddress = () => {
 
+        // setLoading(!isLoading);
         var valid = true;
+        // console.log("Hello clik");
         
-        setApiStatus(true);
+        setLoading(true);
 
        
         
@@ -60,66 +66,77 @@ const PlaceOrder = ({ navigation, reduxUser, reduxCart, updateWalletBalance}) =>
         if(valid)
         {
 
-            Keyboard.dismiss();
-            fetch(API_LINK+'place_order',{
-                method : 'POST',
-                headers : {
-                    'Accept': 'application/json',
-                    'Content-type': 'application/json',
-                    mode: 'cors'
-                },
-                body: JSON.stringify({
+            if(!isLoading){
+                Keyboard.dismiss();
+                console.log("***********************aaaaaaaaaaa*********************************")
+                console.log(JSON.stringify({
                     user_id: reduxUser.customer.userId,
-                    
+                     }))
+                console.log("********************************************************")
+                fetch(API_LINK+'place_order',{
+                    method : 'POST',
+                    headers : {
+                        'Accept': 'application/json',
+                        'Content-type': 'application/json',
+                        mode: 'cors'
+                    },
+                    body: JSON.stringify({
+                        user_id: reduxUser.customer.userId,
+                        
+                         })
                      })
-                 })
-                .then((response) => response.json())
-                .then((responseData) => {
-                   
-                 console.log('ORDER RESPONSE:',responseData);
-                  
-                   
-                  if(responseData.status == 'Success')
-                  {
-                    // setOldpassword('');
-                    // setPassword('');
-
-                 showMessage({
-                        message: "Success",
-                        description: responseData.message,
-                        type: "success",
-                      }); 
-
-                dispatch(emptyCart());
-                // walletBalance();
-                updateWalletBalance(reduxUser.walletBalance - reduxCart.total); 
-                      navigation.replace(CARTSCREEN);
-                   }
-                  else
-                  {
-                    showMessage({
-                        message: "Error",
-                        description: responseData.message,
-                        type: "default",
-                        backgroundColor: 'red'
-                      });
-                    //Alert.alert('Error',responseData.message);
-                  }
-
-                  setApiStatus(false);
-                 })
-                .catch(function(error) {
-                            console.warn('There has been a problem with your fetch operation: ' + error);
-                             // ADD THIS THROW error
-                             setApiStatus(false);
-                              throw error;
-                            
-                            })
-                    ;
+                    .then((response) => response.json())
+                    .then((responseData) => {
+                        console.log("********************************************************")
+                     console.log('ORDER RESPONSE:',responseData);
+                     console.log("********************************************************")
+                       
+                      if(responseData.status == 'Success')
+                      {
+                        // setOldpassword('');
+                        // setPassword('');
+    
+                     showMessage({
+                            message: "Success",
+                            description: responseData.message,
+                            type: "success",
+                          }); 
+    
+                    dispatch(emptyCart());
+                    // walletBalance();
+                    updateWalletBalance(reduxUser.walletBalance - reduxCart.total); 
+                          navigation.replace(CARTSCREEN);
+                       }
+                      else
+                      {
+                        showMessage({
+                            message: "Error",
+                            description: responseData.message,
+                            type: "default",
+                            backgroundColor: 'red'
+                          });
+                        //Alert.alert('Error',responseData.message);
+                      }
+    
+                    //   setApiStatus(0);
+                    setLoading(false);
+                     })
+                    .catch(function(error) {
+                                console.warn('There has been a problem with your fetch operation: ' + error);
+                                 // ADD THIS THROW error
+                                //  setApiStatus(0);
+                                setLoading(false);
+                                  throw error;
+                                
+                                })
+                        ;
+               
+            }
            
         }
 
-        setApiStatus(false);
+        // setApiStatus(0);
+        // setLoading(false);
 
        
 
@@ -152,7 +169,21 @@ const PlaceOrder = ({ navigation, reduxUser, reduxCart, updateWalletBalance}) =>
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <View style={{backgroundColor: 'white', flex: 1, height: '100%'}}> 
+            {/* <Text style={{color:'black'}}>aaaaaaa {apiStatus}</Text> */}
             <MemberHeader title="Review Order"/>
+            {/* <Text style={{color:'black'}}>aaaaaaa </Text> */}
+            {!isLoading ? (
+                <View>
+                
+        </View>
+            ) : (
+                <View>
+                    <Text style={{color:'black', textAlign:'center' }}>Wait your order is being placed... </Text>
+                <ActivityIndicator vis color="black" size={20}  style={{ padding: 16}}/>
+            </View>
+                // <ActivityIndicator vis color="black" size={20}  style={{ padding: 16}}/>
+            )}
+            
         <ScrollView showsVerticalScrollIndicator={false}>
         
         
@@ -173,6 +204,7 @@ const PlaceOrder = ({ navigation, reduxUser, reduxCart, updateWalletBalance}) =>
                 
        
         </ScrollView>
+        
         <View style={styles.addressbar}>
                  <View style={styles.addressSection}>
                      <View style={[styles.headTitle,styles.col]}>
@@ -196,7 +228,7 @@ const PlaceOrder = ({ navigation, reduxUser, reduxCart, updateWalletBalance}) =>
                          </TouchableOpacity>
                          :
                          
-                             <ActivityIndicator color="white" size={20}  style={{ padding: 16}}/>
+                             <ActivityIndicator color="black" size={20}  style={{ padding: 16}}/>
                         
                          }
                          </View>

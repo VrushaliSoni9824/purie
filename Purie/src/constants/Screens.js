@@ -1,6 +1,7 @@
 export const LOGINSCREEN = 'Login';
 export const LOGOUTSCREEN = 'Logout';
 export const REGISTERSCREEN = 'Signup';
+export const SIGNUPOTPVERIFY = 'SignupOTPVerify'
 export const FORGOTPASSWORDSCREEN = 'ForgotPassword';
 export const OTPVERIFY = 'OtpVerify';
 export const RESETPASSWORD = 'ResetPassword';
@@ -36,6 +37,7 @@ export const TERMCNDITION = 'TermCondition';
 export const PRIVACYPOLICY = 'PrivacyPolicy';
 export const REFUNDPOLICY = 'RefundPolicy';
 export const SHIPPINGPOLICY = 'ShippingPolicy';
+export const Report1 = 'Report1';
 export const WALLETSCREEN = 'Wallet'
 export const WALLETSCREENPAY = 'WalletPayment'
 

@@ -1,6 +1,7 @@
 export const API_LINK = 'https://www.purie.in/app/api/';
 export const MEDIA_LINK = 'https://www.purie.in/upload/product/';
 export const CAT_MEDIA_LINK = 'https://www.purie.in/upload/category/';
+export const Invoice_REPORT_LINK = 'https://www.purie.in/app/api/reportPdfs/';
 export const ASYNC_LOGIN_KEY = '@AsyncLoggedInUser';
 export const APP_VER = '1.0';
 export const PACKAGE = '';

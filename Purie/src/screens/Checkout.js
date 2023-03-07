@@ -149,15 +149,15 @@ const Checkout = ({ navigation, reduxUser }) => {
         else{
             setStateError(false);
         }
-        if(frmLandmark.trim() == '')
-        {
-            setLandmarkError('Please enter your landmark');
-            valid = false;
-        }
+        // if(frmLandmark.trim() == '')
+        // {
+        //     setLandmarkError('Please enter your landmark');
+        //     valid = false;
+        // }
         
-        else{
-            setLandmarkError(false);
-        }
+        // else{
+        //     setLandmarkError(false);
+        // }
         
 
         
@@ -272,7 +272,7 @@ const Checkout = ({ navigation, reduxUser }) => {
 
                     <Text style={styles.phone}>Landmark</Text>
                     <TextInput style={styles.textInput} placeholder="Landmark"  value={frmLandmark} onChangeText={text => setFrmLandmark(text)}/>
-                    {(landmarkError) ? <View><Text style={styles.error}>{landmarkError}</Text></View>: <></>}
+                    {/* {(landmarkError) ? <View><Text style={styles.error}>{landmarkError}</Text></View>: <></>} */}
 
                     <Text style={styles.phone}>Country</Text>
                     <TextInput style={styles.textInput} placeholder="Country"  value={frmCountry} onChangeText={text => setFrmCountry(text)} editable={false}/>

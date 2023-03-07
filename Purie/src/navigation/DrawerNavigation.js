@@ -1,6 +1,6 @@
 import React from "react";
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import {Splash, Login, Signup, Cart, Product, Home, Category} from '../screens';
+import {Splash, Login, Signup,SignupOTPVerify, Cart, Product, Home, Category} from '../screens';
 import { StyleSheet, Text, View, Image, ScrollView, Title, Caption, Linking } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
@@ -16,7 +16,7 @@ import Bottom from './Bottom';
 import { connect } from "react-redux";
 import { logout } from "../Store/user/actions";
 import Logout from "../screens/Logout";
-import { LOGOUTSCREEN, PRIVACYPOLICY, REFUNDPOLICY, SHIPPINGPOLICY, TERMCNDITION, ORDERHISTORYSCREEN, MYSUBSCRIPTIONSCREEN, PROFILESCREEN, HOMETABSTACK, HOMESCREEN } from "../constants/Screens";
+import { LOGOUTSCREEN, PRIVACYPOLICY, REFUNDPOLICY, Report, SHIPPINGPOLICY, TERMCNDITION, ORDERHISTORYSCREEN, MYSUBSCRIPTIONSCREEN, PROFILESCREEN, HOMETABSTACK, HOMESCREEN, Report1 } from "../constants/Screens";
 import COLORS from "../constants/Colors";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { clearAsyncStorage, clearAsyncData } from "../utils";
@@ -90,6 +90,10 @@ const CustomDrawerContent = (props) => {
      <DrawerItem label="Shipping Policy" onPress={(ShippingPolicy) => props.navigation.navigate(SHIPPINGPOLICY)} 
      icon = {({color, size}) => (
        <Icon name="truck" color={color} size={size} />
+     )} />
+     <DrawerItem label="Report" onPress={(Report) => props.navigation.navigate(Report1)} 
+     icon = {({color, size}) => (
+       <Icon name="calendar" color={color} size={size} />
      )} />
 
     {/* <DrawerItem label="Wallet" onPress={(Wallet) => props.navigation.navigate(WALLETSCREEN)} 

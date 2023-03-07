@@ -114,7 +114,7 @@ export default Bottom = () => {
               }
             }}
              />
-
+{/* 
             <Tab.Screen name="Refer" component={Refer} options={{
               headerShown: false,
               tabBarLabel:'',
@@ -134,7 +134,7 @@ export default Bottom = () => {
                 );
               }
             }}
-             />
+             /> */}
         
         <Tab.Screen name="PROFILE" component={ProfileTabStack} options={{
               headerShown: false,
