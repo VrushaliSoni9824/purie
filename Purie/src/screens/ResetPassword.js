@@ -10,9 +10,16 @@ import { connect } from "react-redux";
 import { API_LINK, ASYNC_LOGIN_KEY, SMALL_LOGO_RATIO } from '../constants/Strings';
 import { LOGINSCREEN } from '../constants/Screens';
 
+import SuccessError from '../screens/SuccessError';
 
 const ResetPassword = ({ navigation, route }) => {
     // console.log('Mou', reduxUser)
+
+    
+    const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");    
+    const [alertSubTitle,setalertSubTitle] = useState("");
 
     const {email} = route.params;
 
@@ -83,24 +90,32 @@ const ResetPassword = ({ navigation, route }) => {
                     setPassword('');
                     setConfirmPassword('');
 
-                    showMessage({
-                        message: "Success",
-                        description: responseData.message,
-                        type: "success",
-                      });
+                    // showMessage({
+                    //     message: "Success",
+                    //     description: responseData.message,
+                    //     type: "success",
+                    //   });
+                    setalertTitle(responseData.message);
+                setalertSubTitle(" ");
+                setisError(false);
+                setshowAlert1(true);
 
                     navigation.navigate(LOGINSCREEN);  
                     
                    }
                   else
                   {
-                    showMessage({
-                        message: "Error",
-                        description: responseData.message,
-                        type: "default",
-                        backgroundColor: 'red'
-                      });
+                    // showMessage({
+                    //     message: "Error",
+                    //     description: responseData.message,
+                    //     type: "default",
+                    //     backgroundColor: 'red'
+                    //   });
                     //Alert.alert('Error',responseData.message);
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
                   }
 
                   setApiStatus(false);
@@ -125,6 +140,15 @@ const ResetPassword = ({ navigation, route }) => {
 
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
+            <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
         <View > 
         
             <View style={styles.container}>

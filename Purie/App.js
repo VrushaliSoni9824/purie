@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React,{useState,useEffect} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { DrawerNavigation, Navigation } from './src/navigation';
 import { Drawer } from './src/navigation';
@@ -9,10 +9,16 @@ import { API_LINK } from './src/constants/Strings';
 import { showMessage } from 'react-native-flash-message';
 import messaging from "@react-native-firebase/messaging";
 import PushNotification, {Importance} from 'react-native-push-notification';
+// import SuccessError from '../screens/SuccessError';
 
 
 
 const App = ({reduxUser}) =>{
+
+  const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");
+    const [alertSubTitle,setalertSubTitle] = useState("");
 
   useEffect(() => {
 

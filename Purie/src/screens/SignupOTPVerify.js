@@ -12,9 +12,15 @@ import { storeUser } from '../Store/user/actions';
 import { getLogoDimensions } from '../utils';
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 
-
+import SuccessError from '../screens/SuccessError';
 
 const SignupOTPVerify = ({navigation,route,  reduxUser, reduxStoreUser}) => {
+
+        
+    const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");    
+    const [alertSubTitle,setalertSubTitle] = useState("");
 
     const [apiStatus, setApiStatus] = useState(false);
     
@@ -85,12 +91,15 @@ const SignupOTPVerify = ({navigation,route,  reduxUser, reduxStoreUser}) => {
                     setName('');
                     setEmail('');
 
-                    showMessage({
-                        message: "Success",
-                        description: responseData.message,
-                        type: "success",
-                      });
-
+                    // showMessage({
+                    //     message: "Success",
+                    //     description: responseData.message,
+                    //     type: "success",
+                    //   });
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(false);
+                    setshowAlert1(true);
                      
                     //   const loggedInUser = prepLoggedInUserData(responseData.user);
 
@@ -102,13 +111,17 @@ const SignupOTPVerify = ({navigation,route,  reduxUser, reduxStoreUser}) => {
                    }
                   else
                   {
-                    showMessage({
-                        message: "Error",
-                        description: responseData.message,
-                        type: "default",
-                        backgroundColor: 'red'
-                      });
+                    // showMessage({
+                    //     message: "Error",
+                    //     description: responseData.message,
+                    //     type: "default",
+                    //     backgroundColor: 'red'
+                    //   });
                     //Alert.alert('Error',responseData.message);
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
                   }
 
                   setApiStatus(false);
@@ -157,6 +170,15 @@ const SignupOTPVerify = ({navigation,route,  reduxUser, reduxStoreUser}) => {
     return (
         <>
         <ScrollView style={{minHeight: '100%', backgroundColor: 'white'}} >
+        <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
          <View style={styles.page}>
             
                 <KeyboardAvoidingView>

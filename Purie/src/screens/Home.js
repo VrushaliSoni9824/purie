@@ -379,7 +379,7 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
                     </View>
                 :
                 <>
-               
+        
                 <View style={styles.categorycontainer}>
                     <Text style={styles.catTitle}>Most Popular Category</Text>
                     <View style={styles.categoryrow}>

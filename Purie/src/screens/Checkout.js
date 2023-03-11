@@ -10,6 +10,10 @@ import { connect } from "react-redux";
 import { API_LINK, ASYNC_LOGIN_KEY, SMALL_LOGO_RATIO } from '../constants/Strings';
 import { PLACEORDERSCREEN } from '../constants/Screens';
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import SuccessError from '../screens/SuccessError';
+
+
 const Checkout = ({ navigation, reduxUser }) => {
     const [data, setData] = useState(false);
     const [apiStatus, setApiStatus] = useState(false);
@@ -38,7 +42,13 @@ const Checkout = ({ navigation, reduxUser }) => {
 
     const [frmLandmark, setFrmLandmark] = useState('');
     const [landmarkError, setLandmarkError] = useState(false);
-  
+      
+    const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");    
+    const [alertSubTitle,setalertSubTitle] = useState("");
+
+
     const getProduct = () => {
   
   //    console.log('home data api call ');
@@ -210,13 +220,20 @@ const Checkout = ({ navigation, reduxUser }) => {
                    }
                   else
                   {
-                    showMessage({
-                        message: "Error",
-                        description: responseData.message,
-                        type: "default",
-                        backgroundColor: 'red'
-                      });
+                    // showMessage({
+                    //     message: "Error",
+                    //     description: responseData.message,
+                    //     type: "default",
+                    //     backgroundColor: 'red'
+                    //   });
                     //Alert.alert('Error',responseData.message);
+
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
+
+
                   }
 
                   setApiStatus(false);
@@ -241,6 +258,15 @@ const Checkout = ({ navigation, reduxUser }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <ScrollView showsVerticalScrollIndicator={false}>
+        <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
         <View > 
         <MemberHeader title="Address"/>
             <View style={styles.container}>

@@ -127,11 +127,16 @@ const OrderListView = ({item, _loadCart}) => {
                 {
                 
                    
-                    showMessage({
-                        message: "Success",
-                        description: responseData.message,
-                        type: "success",
-                      });
+                    // showMessage({
+                    //     message: "Success",
+                    //     description: responseData.message,
+                    //     type: "success",
+                    //   });
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(false);
+                    setshowAlert1(true);
+                    
                 }
                 
              })

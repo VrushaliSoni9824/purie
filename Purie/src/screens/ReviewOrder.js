@@ -12,9 +12,16 @@ import { API_LINK } from '../constants/Strings';
 import { updateWallet } from '../Store/user/actions';
 import { showMessage } from 'react-native-flash-message';
 
+import SuccessError from '../screens/SuccessError';
+
 const ReviewOrder = ({navigation, route, reduxUser, reduxSaveTxn, updateWalletBalance }) => {
 
    // const reduxUser =  useSelector(state => state.user);
+
+   const [showAlert1, setshowAlert1] = useState(false);
+   const [isError, setisError] = useState(false);
+   const [alertTitle,setalertTitle] = useState("");    
+   const [alertSubTitle,setalertSubTitle] = useState("");
 
     const { productName, planName, productImage, price, qty, duration, frequency, timeSlot, startDate, orderId, discount, couponDiscount } = route.params;
     console.log('REVIEW ORDER',route.params);
@@ -80,11 +87,15 @@ const ReviewOrder = ({navigation, route, reduxUser, reduxSaveTxn, updateWalletBa
                      })
                     .then((response) => response.json())
                     .then((responseData) => {
-                        showMessage({
-                            message: "Success",
-                            description: "Recharge Successfull",
-                            type: "success",
-                          });
+                        // showMessage({
+                        //     message: "Success",
+                        //     description: "Recharge Successfull",
+                        //     type: "success",
+                        //   });
+                        setalertTitle(responseData.message);
+                        setalertSubTitle(" ");
+                        setisError(false);
+                        setshowAlert1(true);
                         // console.log('WALLET UPDATE status data',responseData);
                         fetch(API_LINK+'wallet',{
                             method : 'POST',
@@ -144,6 +155,15 @@ const ReviewOrder = ({navigation, route, reduxUser, reduxSaveTxn, updateWalletBa
     return (
        <>
        <SafeAreaView style={{ flex: 1,  }}>
+       <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
        <MemberHeader  title="Review Order"/>
         <ScrollView>
             

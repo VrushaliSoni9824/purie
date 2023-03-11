@@ -17,8 +17,14 @@ import { emptyCart } from '../Store/user/actions';
 import { updateWallet } from '../Store/user/actions';
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import SuccessError from '../screens/SuccessError';
+
 const PlaceOrder = ({ navigation, reduxUser, reduxCart, updateWalletBalance}) => {
 
+    const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");    
+    const [alertSubTitle,setalertSubTitle] = useState("");
 
     const [apiStatus, setApiStatus] = useState(0);
     const [isLoading, setLoading] = useState(false);
@@ -35,13 +41,18 @@ const PlaceOrder = ({ navigation, reduxUser, reduxCart, updateWalletBalance}) =>
     const validateBalance = () => {
         if(parseInt(reduxCart.total) > parseInt(reduxUser.walletBalance))
         {
-            showMessage({
-                message: "Error",
-                description: 'Please recharge wallet to proceed',
-                type: "default",
-                backgroundColor: 'red'
-              });
+            // showMessage({
+            //     message: "Error",
+            //     description: 'Please recharge wallet to proceed',
+            //     type: "default",
+            //     backgroundColor: 'red'
+            //   });
             //  navigation.navigate('PROFILE', { screen : WALLETSCREEN});
+            setalertTitle(responseData.message);
+                setalertSubTitle(" ");
+                setisError(false);
+                setshowAlert1(true);
+
         }
     }
     
@@ -96,12 +107,17 @@ const PlaceOrder = ({ navigation, reduxUser, reduxCart, updateWalletBalance}) =>
                         // setOldpassword('');
                         // setPassword('');
     
-                     showMessage({
-                            message: "Success",
-                            description: responseData.message,
-                            type: "success",
-                          }); 
-    
+                    // showMessage ({
+                    //         message: "Success",
+                    //         description: responseData.message,
+                    //         type: "success",
+                    //       }); 
+                    setalertTitle(responseData.message);
+                setalertSubTitle(" ");
+                setisError(false);
+                setshowAlert1(true);
+
+
                     dispatch(emptyCart());
                     // walletBalance();
                     updateWalletBalance(reduxUser.walletBalance - reduxCart.total); 
@@ -109,13 +125,17 @@ const PlaceOrder = ({ navigation, reduxUser, reduxCart, updateWalletBalance}) =>
                        }
                       else
                       {
-                        showMessage({
-                            message: "Error",
-                            description: responseData.message,
-                            type: "default",
-                            backgroundColor: 'red'
-                          });
+                        // showMessage({
+                        //     message: "Error",
+                        //     description: responseData.message,
+                        //     type: "default",
+                        //     backgroundColor: 'red'
+                        //   });
                         //Alert.alert('Error',responseData.message);
+                        setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
                       }
     
                     //   setApiStatus(0);
@@ -168,6 +188,15 @@ const PlaceOrder = ({ navigation, reduxUser, reduxCart, updateWalletBalance}) =>
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+            <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
             <View style={{backgroundColor: 'white', flex: 1, height: '100%'}}> 
             {/* <Text style={{color:'black'}}>aaaaaaa {apiStatus}</Text> */}
             <MemberHeader title="Review Order"/>

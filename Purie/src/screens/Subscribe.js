@@ -17,9 +17,17 @@ import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/Feather';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 
+import SuccessError from '../screens/SuccessError';
+
 
 const Subscribe = ({navigation, route, reduxUser, reduxPlans, reduxSaveQuote, reduxUpdateAdress}) => {
     
+    
+const [showAlert1, setshowAlert1] = useState(false);
+const [isError, setisError] = useState(false);
+const [alertTitle,setalertTitle] = useState("");    
+const [alertSubTitle,setalertSubTitle] = useState("");
+
     const product = route.params;
    // const plans = reduxPlans.plans;
 
@@ -254,12 +262,16 @@ const Subscribe = ({navigation, route, reduxUser, reduxPlans, reduxSaveQuote, re
                }
               else
               {
-                showMessage({
-                    message: "Error",
-                    description: responseData.message,
-                    type: "default",
-                    backgroundColor: 'red'
-                  });
+                // showMessage({
+                //     message: "Error",
+                //     description: responseData.message,
+                //     type: "default",
+                //     backgroundColor: 'red'
+                //   });
+                setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
               }
               setApiStatus(false);
              })
@@ -526,12 +538,15 @@ const Subscribe = ({navigation, route, reduxUser, reduxPlans, reduxSaveQuote, re
                     // setOldpassword('');
                     // setPassword('');
 
-                 showMessage({
-                        message: "Success",
-                        description: responseData.message,
-                        type: "success",
-                      }); 
-
+                //  showMessage({
+                //         message: "Success",
+                //         description: responseData.message,
+                //         type: "success",
+                //       }); 
+                setalertTitle(responseData.message);
+                setalertSubTitle(" ");
+                setisError(false);
+                setshowAlert1(true);
                       setShowModal(false);
                       getAddress();
                      
@@ -539,13 +554,17 @@ const Subscribe = ({navigation, route, reduxUser, reduxPlans, reduxSaveQuote, re
                    }
                   else
                   {
-                    showMessage({
-                        message: "Error",
-                        description: responseData.message,
-                        type: "default",
-                        backgroundColor: 'red'
-                      });
+                    // showMessage({
+                    //     message: "Error",
+                    //     description: responseData.message,
+                    //     type: "default",
+                    //     backgroundColor: 'red'
+                    //   });
                     //Alert.alert('Error',responseData.message);
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
                   }
 
                   setApiStatus(false);
@@ -611,24 +630,32 @@ const Subscribe = ({navigation, route, reduxUser, reduxPlans, reduxSaveQuote, re
                     if(!responseData.hasOwnProperty('message'))
                     { 
 
-                    showMessage({
-                        message: "Success",
-                        description: "Coupon code applied",
-                        type: "success",
-                      }); 
-
+                    // showMessage({
+                    //     message: "Success",
+                    //     description: "Coupon code applied",
+                    //     type: "success",
+                    //   }); 
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(false);
+                    setshowAlert1(true);
+    
                       setCouponDiscountPerUnit(responseData.coupon[0].coupon_price);
                       setCouponDiscount(parseInt(responseData.coupon[0].coupon_price) * duration);
                       setIsCouponApplied(true);
                     }
                     else
                     {
-                        showMessage({
-                            message: "Error",
-                            description: responseData.message,
-                            type: "default",
-                            backgroundColor: 'red'
-                          }); 
+                        // showMessage({
+                        //     message: "Error",
+                        //     description: responseData.message,
+                        //     type: "default",
+                        //     backgroundColor: 'red'
+                        //   }); 
+                        setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
                     } 
                    
                 
@@ -649,12 +676,16 @@ const Subscribe = ({navigation, route, reduxUser, reduxPlans, reduxSaveQuote, re
          }
          else
          {
-            showMessage({
-                message: "Error",
-                description: "Please enter coupon code",
-                type: "default",
-                backgroundColor: 'red'
-              }); 
+            // showMessage({
+            //     message: "Error",
+            //     description: "Please enter coupon code",
+            //     type: "default",
+            //     backgroundColor: 'red'
+            //   }); 
+            setalertTitle(responseData.message);
+            setalertSubTitle(" ");
+            setisError(true);
+            setshowAlert1(true);
          }
       }
 
@@ -678,6 +709,15 @@ const Subscribe = ({navigation, route, reduxUser, reduxPlans, reduxSaveQuote, re
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
+            <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
             <MemberHeader title={product.product.item.product_name}/>
             {/* <View style={styles.header}>
                 <Text>sudio</Text>

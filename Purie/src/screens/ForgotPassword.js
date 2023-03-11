@@ -12,8 +12,15 @@ import { prepLoggedInUserData, storeAsyncData } from '../utils';
 import { getLogoDimensions } from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import SuccessError from '../screens/SuccessError';
 
 const ForgotPassword = ({navigation, reduxUser, reduxStoreUser}) => {
+
+    
+const [showAlert1, setshowAlert1] = useState(false);
+const [isError, setisError] = useState(false);
+const [alertTitle,setalertTitle] = useState("");    
+const [alertSubTitle,setalertSubTitle] = useState("");
 
     console.log('RU',reduxUser);
 
@@ -92,6 +99,7 @@ const ForgotPassword = ({navigation, reduxUser, reduxStoreUser}) => {
                         type: "success",
                       });
                       */
+
                       navigation.navigate(CHANGEPASSWORDSCREEN,{reduxUser: reduxUser,name:989898});
                       AsyncStorage.setItem("phone",phone);
                       setModalText(responseData.message)
@@ -100,13 +108,18 @@ const ForgotPassword = ({navigation, reduxUser, reduxStoreUser}) => {
                    }
                   else
                   {
-                    showMessage({
-                        message: "Error",
-                        description: responseData.message,
-                        type: "default",
-                        backgroundColor: 'red'
-                      });
+                    // showMessage({
+                    //     message: "Error",
+                    //     description: responseData.message,
+                    //     type: "default",
+                    //     backgroundColor: 'red'
+                    //   });
                     //Alert.alert('Error',responseData.message);
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
+
                   }
 
                   setApiStatus(false);
@@ -169,25 +182,36 @@ const ForgotPassword = ({navigation, reduxUser, reduxStoreUser}) => {
                   if(responseData.status == 'Success')
                   {
                    
-                   showMessage({
-                        message: "Success",
-                        description: responseData.message,
-                        type: "success",
-                      });
+                //    showMessage({
+                //         message: "Success",
+                //         description: responseData.message,
+                //         type: "success",
+                //       });
                     
+                setalertTitle(responseData.message);
+                setalertSubTitle(" ");
+                setisError(false);
+                setshowAlert1(true);
+
                       navigation.navigate(RESETPASSWORD,{email:phone});
                     
                    }
                   else
                   {
-                    showMessage({
-                        message: "Error",
-                        description: responseData.message,
-                        type: "default",
-                        backgroundColor: 'red'
-                      });
+                    // showMessage({
+                    //     message: "Error",
+                    //     description: responseData.message,
+                    //     type: "default",
+                    //     backgroundColor: 'red'
+                    //   });
                     //Alert.alert('Error',responseData.message);
-                  }
+
+
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
+                    }
 
                   setApiStatus(false);
                  })
@@ -211,6 +235,15 @@ const ForgotPassword = ({navigation, reduxUser, reduxStoreUser}) => {
         <>
         <View style={styles.page}>
         <ScrollView >
+        <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
             <KeyboardAvoidingView>
         <View style={[styles.container, styles.headerSpace]}>
             <StatusBar barStyle="dark-content"/>

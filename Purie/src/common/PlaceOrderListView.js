@@ -6,7 +6,7 @@ import { useNavigation  } from '@react-navigation/core';
 import { PRODUCTSCREEN, SUBSCRIPTIONSSCREEN } from '../constants/Screens';
 import { addToCart, updatecart } from '../Store/user/actions';
 import { connect, useSelector, useDispatch } from 'react-redux';
-
+import SuccessError from '../screens/SuccessError';
 
 const PlaceOrderListView = ({item, _loadCart}) => {
 
@@ -14,6 +14,11 @@ const PlaceOrderListView = ({item, _loadCart}) => {
     const reduxCart = useSelector(state => state.cart);
     const reduxUser = useSelector(state => state.user);
    // const dispatch = useDispatch();
+
+    const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");    
+    const [alertSubTitle,setalertSubTitle] = useState("");
 
     console.log('CART ITEM',item);
 
@@ -127,11 +132,15 @@ const PlaceOrderListView = ({item, _loadCart}) => {
                 {
                 
                    
-                    showMessage({
-                        message: "Success",
-                        description: responseData.message,
-                        type: "success",
-                      });
+                    // showMessage({
+                    //     message: "Success",
+                    //     description: responseData.message,
+                    //     type: "success",
+                    //   });
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(false);
+                    setshowAlert1(true);
                 }
                 
              })
@@ -160,6 +169,15 @@ const PlaceOrderListView = ({item, _loadCart}) => {
     return (
         
         <View style={styles.cartdetail}>
+            <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
                      <View style={styles.productimage}>
                          <Image style={styles.pro} source={{uri: item.item.image}} resizeMode="contain" />
                      </View>

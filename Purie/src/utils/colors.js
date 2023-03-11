@@ -1,0 +1,16 @@
+export const Colors = {
+    // header: '#f05760',
+    mainHeader: ['#1B6AEC', '#1B6AEC'],
+    //header: '#FFEDEE',
+    header: '#fbfbfb',
+    white: '#ffffff',
+    overlay: 'rgba(0.5, 0.25, 0, 0.2)',
+    maroon: '#f05760',
+    secondary: '#CCDDFF',
+    //button: ['#6C53CE', '#9B57F1'],
+    button: ['#381CA8', '#381CA8'],
+    calendarBg: '#381CA8',
+    tab: ['#AB1DEE', '#100CEEA8'],
+    red: '#F15761',
+    green: '#31BD3F',
+}

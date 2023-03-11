@@ -9,10 +9,20 @@ import { COLORS } from '../constants/Colors';
 import { connect } from "react-redux";
 import { API_LINK, ASYNC_LOGIN_KEY, SMALL_LOGO_RATIO } from '../constants/Strings';
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import SuccessError from '../screens/SuccessError';
+
+
 const Address = ({ reduxUser }) => {
     const [data, setData] = useState([]);
     const [apiStatus, setApiStatus] = useState(false);
     //   console.log('CAt Name',catName);
+
+    const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");    
+    const [alertSubTitle,setalertSubTitle] = useState("");
+    
 
     const [frmFlat, setFrmFlat] = useState('');
     const [flatError, setFlatError] = useState(false);
@@ -203,24 +213,33 @@ const Address = ({ reduxUser }) => {
                     // setOldpassword('');
                     // setPassword('');
 
-                    showMessage({
-                        message: "Success",
-                        description: responseData.message,
-                        type: "success",
-                      });
-
+                    // showMessage({
+                    //     message: "Success",
+                    //     description: responseData.message,
+                    //     type: "success",
+                    //   });
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(false);
+                    setshowAlert1(true);
+    
+    
                       
                     
                    }
                   else
                   {
-                    showMessage({
-                        message: "Error",
-                        description: responseData.message,
-                        type: "default",
-                        backgroundColor: 'red'
-                      });
+                    // showMessage({
+                    //     message: "Error",
+                    //     description: responseData.message,
+                    //     type: "default",
+                    //     backgroundColor: 'red'
+                    //   });
                     //Alert.alert('Error',responseData.message);
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
                   }
 
                   setApiStatus(false);
@@ -245,6 +264,15 @@ const Address = ({ reduxUser }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <ScrollView showsVerticalScrollIndicator={false}>
+        <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
         <View > 
         <MemberHeader title="Address"/>
             <View style={styles.container}>

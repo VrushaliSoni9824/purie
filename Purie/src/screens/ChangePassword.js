@@ -14,10 +14,17 @@ import OTPInputView from '@twotalltotems/react-native-otp-input'
 import { FORGOTPASSWORDSCREEN, LOGINSCREEN } from '../constants/Screens';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import SuccessError from '../screens/SuccessError';
+
 const ChangePassword = ({ navigation,route, reduxUser, name }) => {
     console.log('==============================', reduxUser)
     console.log(name);
     const [apiStatus, setApiStatus] = useState(false);
+
+    const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");    
+    const [alertSubTitle,setalertSubTitle] = useState("");
 
     const [isVerified, setisVerified] = useState(false);
     
@@ -96,21 +103,32 @@ const ChangePassword = ({ navigation,route, reduxUser, name }) => {
                     setNewpassword('');
                     setPassword('');
 
-                    showMessage({
-                        message: "Success",
-                        description: responseData.message,
-                        type: "success",
-                      });
+                    // showMessage({
+                    //     message: "Success",
+                    //     description: responseData.message,
+                    //     type: "success",
+                    //   });
+                    setalertTitle(responseData.message);
+                setalertSubTitle(" ");
+                setisError(false);
+                setshowAlert1(true);
+
                    }
                   else
                   {
-                    showMessage({
-                        message: "Error",
-                        description: responseData.message,
-                        type: "default",
-                        backgroundColor: 'red'
-                      });
+                    // showMessage({
+                    //     message: "Error",
+                    //     description: responseData.message,
+                    //     type: "default",
+                    //     backgroundColor: 'red'
+                    //   });
                     //Alert.alert('Error',responseData.message);
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
+
+
                   }
                   navigation.navigate(LOGINSCREEN)
                   setApiStatus(false);
@@ -177,21 +195,30 @@ const ChangePassword = ({ navigation,route, reduxUser, name }) => {
                     setotp('');
                     setisVerified(true)
 
-                    showMessage({
-                        message: "Success",
-                        description: "your mobile number is verified!",
-                        type: "success",
-                      });
+                    // showMessage({
+                    //     message: "Success",
+                    //     description: "your mobile number is verified!",
+                    //     type: "success",
+                    //   });
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(false);
+                    setshowAlert1(true);
                    }
                   else
                   {
-                    showMessage({
-                        message: "Error",
-                        description: responseData.message,
-                        type: "default",
-                        backgroundColor: 'red'
-                      });
+                    // showMessage({
+                    //     message: "Error",
+                    //     description: responseData.message,
+                    //     type: "default",
+                    //     backgroundColor: 'red'
+                    //   });
                     //Alert.alert('Error',responseData.message);
+
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
                   }
 
                   setApiStatus(false);
@@ -224,6 +251,15 @@ const ChangePassword = ({ navigation,route, reduxUser, name }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <ScrollView showsVerticalScrollIndicator={false}>
+        <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
         <View > 
        
             <View style={styles.container}>

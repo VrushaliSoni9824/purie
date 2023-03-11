@@ -11,9 +11,15 @@ import { prepLoggedInUserData, storeAsyncData } from '../utils';
 import { storeUser } from '../Store/user/actions';
 import { getLogoDimensions } from '../utils';
 
-
+import SuccessError from '../screens/SuccessError';
 
 const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
+
+
+    const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");    
+    const [alertSubTitle,setalertSubTitle] = useState("");
 
     const [apiStatus, setApiStatus] = useState(false);
     
@@ -112,12 +118,15 @@ const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
                     setName('');
                     setEmail('');
 
-                    showMessage({
-                        message: "Registration successful ! ",
-                        description: "Please verify your mobile number",
-                        type: "success",
-                      });
-
+                    // showMessage({
+                    //     message: "Registration successful ! ",
+                    //     description: "Please verify your mobile number",
+                    //     type: "success",
+                    //   });
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(false);
+                    setshowAlert1(true);
                      
                       const loggedInUser = prepLoggedInUserData(responseData.user);
                       console.log("========before===========");
@@ -132,13 +141,17 @@ const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
                    }
                   else
                   {
-                    showMessage({
-                        message: "Error",
-                        description: responseData.message,
-                        type: "default",
-                        backgroundColor: 'red'
-                      });
+                    // showMessage({
+                    //     message: "Error",
+                    //     description: responseData.message,
+                    //     type: "default",
+                    //     backgroundColor: 'red'
+                    //   });
                     //Alert.alert('Error',responseData.message);
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
                   }
 
                   setApiStatus(false);
@@ -191,6 +204,15 @@ const Signup = ({navigation,  reduxUser, reduxStoreUser}) => {
     return (
         <>
         <ScrollView style={{minHeight: '100%', backgroundColor: 'white'}} >
+        <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
          <View style={styles.page}>
             
                 <KeyboardAvoidingView>

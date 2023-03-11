@@ -12,8 +12,15 @@ import { connect } from 'react-redux'
 import { SafeAreaView } from "react-native-safe-area-context";
 import { PLACEORDERSCREEN } from '../constants/Screens';
 
+import SuccessError from '../screens/SuccessError';
+
 const WalletPayment = ({updateWalletBalance, navigation}) => {
  
+
+    const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");    
+    const [alertSubTitle,setalertSubTitle] = useState("");
 
     const goToHome = () => {
         // dispatch(emptyCart());
@@ -97,11 +104,17 @@ const WalletPayment = ({updateWalletBalance, navigation}) => {
              })
             .then((response) => response.json())
             .then((responseData) => {
-                showMessage({
-                    message: "Success",
-                    description: "Recharge Successfull",
-                    type: "success",
-                  });
+                // showMessage({
+                //     message: "Success",
+                //     description: "Recharge Successfull",
+                //     type: "success",
+                //   });
+                setalertTitle(responseData.message);
+                setalertSubTitle(" ");
+                setisError(false);
+                setshowAlert1(true);
+
+
                 // console.log('WALLET UPDATE status data',responseData);
                 fetch(API_LINK+'wallet',{
                     method : 'POST',
@@ -223,6 +236,15 @@ const showWalletHistory = () => {
             console.log('ITEM',item);
             return (
                 <View>
+                    <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
                             <View style={[styles.recordrow]}>
                             <View style={[styles.recordcol, styles.recordac, styles.ids]}>
                             <Text style={styles.recordamounts}>{showPrice(item.item.amount)}</Text>

@@ -6,6 +6,7 @@ import { useNavigation  } from '@react-navigation/core';
 import { PRODUCTSCREEN, SUBSCRIPTIONSSCREEN } from '../constants/Screens';
 import Icon from 'react-native-vector-icons/Feather';
 import { showMessage } from 'react-native-flash-message';
+import SuccessError from '../screens/SuccessError';
 
 const OrderHistoryListView = ({item, refreshOrder}) => {
     const [apiStatus, setApiStatus] = useState(false);
@@ -15,8 +16,12 @@ const OrderHistoryListView = ({item, refreshOrder}) => {
     
     const [isAdded, setisAdded] = useState(false);
     const [showSubscribe,setShowSubscribe] = useState(false);
-
     const [qty,setQty] = useState(1);
+
+    const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");
+    const [alertSubTitle,setalertSubTitle] = useState("");
 
 
     const addToCart = () => {
@@ -48,23 +53,31 @@ const OrderHistoryListView = ({item, refreshOrder}) => {
             
             refreshOrder();
 
-            showMessage({
-                message: "Success",
-                description: responseData.message,
-                type: "success",
-              });
-
+            // showMessage({
+            //     message: "Success",
+            //     description: responseData.message,
+            //     type: "success",
+            //   });
+            setalertTitle(responseData.message);
+            setalertSubTitle(" ");
+            setisError(false);
+            setshowAlert1(true);
             
            }
           else
           {
-            showMessage({
-                message: "Error",
-                description: responseData.message,
-                type: "default",
-                backgroundColor: 'red'
-              });
+            // showMessage({
+            //     message: "Error",
+            //     description: responseData.message,
+            //     type: "default",
+            //     backgroundColor: 'red'
+            //   });
             //Alert.alert('Error',responseData.message);
+
+            setalertTitle(responseData.message);
+            setalertSubTitle(" ");
+            setisError(true);
+            setshowAlert1(true);
           }
 
           setApiStatus(false);
@@ -104,25 +117,31 @@ const OrderHistoryListView = ({item, refreshOrder}) => {
               
               refreshOrder();
   
-              showMessage({
-                  message: "Success",
-                  description: responseData.message,
-                  type: "success",
-                });
-  
+            //   showMessage({
+            //       message: "Success",
+            //       description: responseData.message,
+            //       type: "success",
+            //     });
+            setalertTitle(responseData.message);
+            setalertSubTitle(" ");
+            setisError(false);
+            setshowAlert1(true);
               
              }
             else
             {
-              showMessage({
-                  message: "Error",
-                  description: responseData.message,
-                  type: "default",
-                  backgroundColor: 'red'
-                });
+            //   showMessage({
+            //       message: "Error",
+            //       description: responseData.message,
+            //       type: "default",
+            //       backgroundColor: 'red'
+            //     });
               //Alert.alert('Error',responseData.message);
-            }
-  
+           
+              setalertTitle(responseData.message);
+              setalertSubTitle(" ");
+              setisError(true);
+              setshowAlert1(true);            }
             setApiStatus(false);
            })
           .catch(function(error) {
@@ -139,6 +158,15 @@ const OrderHistoryListView = ({item, refreshOrder}) => {
     return (
         
         <View style={styles.cartdetail}>
+            <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
                      <View style={styles.productimage}>
                          <Image style={styles.pro} source={{uri: imagesource}} />
                      </View>

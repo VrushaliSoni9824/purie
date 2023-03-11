@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 import {showMessage } from 'react-native-flash-message';
 import Icon from 'react-native-vector-icons/Ionicons'
 
+import SuccessError from '../screens/SuccessError';
 import { addToCart } from '../Store/user/actions';
 
 
@@ -22,6 +23,11 @@ const ProductListView = ({item, reduxUser, _loadCart, reduxCart}) => {
     const [isAdded, setisAdded] = useState(false);
     const [showSubscribe,setShowSubscribe] = useState(false);
     const [qty, setQty] = useState(1);
+
+    const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");    
+    const [alertSubTitle,setalertSubTitle] = useState("");
 
     console.log('RD CART',reduxCart);
 
@@ -70,11 +76,15 @@ const ProductListView = ({item, reduxUser, _loadCart, reduxCart}) => {
         
                     };
                    
-                    showMessage({
-                        message: "Success",
-                        description: responseData.message,
-                        type: "success",
-                      });
+                    // showMessage({
+                    //     message: "Success",
+                    //     description: responseData.message,
+                    //     type: "success",
+                    //   });
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(false);
+                    setshowAlert1(true);
                 }
                 
              })
@@ -197,6 +207,17 @@ const ProductListView = ({item, reduxUser, _loadCart, reduxCart}) => {
 
     return (
         <View style={styles.prorow}>
+        
+            <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
+
         <View style={styles.product}>
 
             <Image style={styles.proImg} source={{uri: imagesource}} />

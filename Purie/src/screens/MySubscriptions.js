@@ -8,6 +8,8 @@ import { showMessage } from 'react-native-flash-message';
 import OrderListView from '../common/OrderListView';
 import OrderHistoryListView from '../common/OrderHistoryListView';
 
+import SuccessError from '../screens/SuccessError';
+
 const MySubscriptions = ({navigation}) => {
 
     let today = new Date();
@@ -22,6 +24,12 @@ const MySubscriptions = ({navigation}) => {
     const [response, setResponse] = useState('');
     const [monthI, setMonthI] = useState(today.getMonth() + 1);
     const [yearI, setYearI] = useState(today.getFullYear());
+
+
+    const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");    
+    const [alertSubTitle,setalertSubTitle] = useState("");
 
     let data = [];
 
@@ -194,6 +202,15 @@ const renderItem = (item) => {
 
     return (
         <View style={{width: 80, height: 80, justifyContent: 'center', alignItems: 'center'}}>
+            <SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
             {
                 (item.item.key == activeDate)
                 ?

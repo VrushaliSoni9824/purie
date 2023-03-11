@@ -11,6 +11,7 @@ import { showMessage } from 'react-native-flash-message';
 import { prepLoggedInUserData, storeAsyncData } from '../utils';
 import { getLogoDimensions } from '../utils';
 import messaging from "@react-native-firebase/messaging";
+import SuccessError from '../screens/SuccessError';
 
 
 const Login = ({navigation, reduxUser, reduxStoreUser}) => {
@@ -26,6 +27,11 @@ const Login = ({navigation, reduxUser, reduxStoreUser}) => {
     const [phoneError, setPhoneError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
 
+
+    const [showAlert1, setshowAlert1] = useState(false);
+    const [isError, setisError] = useState(false);
+    const [alertTitle,setalertTitle] = useState("");
+    const [alertSubTitle,setalertSubTitle] = useState("");
 
     const getFCMToken = async () => {
         try {
@@ -106,11 +112,16 @@ const Login = ({navigation, reduxUser, reduxStoreUser}) => {
                     setPhone('');
                     setPassword('');
 
-                    showMessage({
-                        message: "Success",
-                        description: responseData.message,
-                        type: "success",
-                      });
+                    // showMessage({
+                    //     message: "Success",
+                    //     description: responseData.message,
+                    //     type: "success",
+                    //   });
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(false);
+                    setshowAlert1(true);
+                      
 
                       const loggedInUser = prepLoggedInUserData(responseData.user);
                       reduxStoreUser(loggedInUser);
@@ -138,12 +149,17 @@ const Login = ({navigation, reduxUser, reduxStoreUser}) => {
                    }
                   else
                   {
-                    showMessage({
-                        message: "Error",
-                        description: responseData.message,
-                        type: "default",
-                        backgroundColor: 'red'
-                      });
+                    // showMessage({
+                    //     message: "Error",
+                    //     description: responseData.message,
+                    //     type: "default",
+                    //     backgroundColor: 'red'
+                    //   });
+                    setalertTitle(responseData.message);
+                    setalertSubTitle(" ");
+                    setisError(true);
+                    setshowAlert1(true);
+                     
                     //Alert.alert('Error',responseData.message);
                   }
 
@@ -193,6 +209,16 @@ const Login = ({navigation, reduxUser, reduxStoreUser}) => {
         <>
 
 <ScrollView style={{minHeight: '100%', backgroundColor: 'white'}} >
+<SuccessError
+          isVisible={showAlert1}
+          error={isError}
+          title={alertTitle}
+          deleteIconPress={() => {
+            setshowAlert1(false)
+          }}
+        //   subTitle={alertSubTitle}
+        />
+
         <View style={styles.page}>
         
             <KeyboardAvoidingView>
