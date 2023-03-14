@@ -17,6 +17,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 
 import RenderHtml, { HTMLElementModel, HTMLContentModel } from 'react-native-render-html';
+import { Alert } from "react-native";
 
 
 const images = [
@@ -35,21 +36,19 @@ const Home = ({ navigation, reduxUser, reduxLoadPlans, updateWalletBalance }) =>
     const [modalVisible, setModalVisible] = useState(false);
 
     const [isDataLoaded, setIsDataLoaded] = useState(false);
+    const [Topbar, setTopbar] = useState("");
 
     const [mostSellingProducts, setmostSellingProducts] = useState(false);
-    const [categories, setCategories] = useState(false);
-    const [wallet, setWallet] = useState(false);
+    const [mostSellingvegitable, setmostSellingvegitable] = useState(false);
 
+    const [vegitablecategories, setvegitableCategories] = useState(false);
+    const [categories, setCategories] = useState(false);
+    
+    const [wallet, setWallet] = useState(false);
+    
    // const [isHomePageReady, setisHomePageReady] = useState(false);
 
-   var source = {
-    html: `
-  <p style='text-align:center;'>
-    <b>Hello</b> World!
-  </p>`
-  };
- 
-
+  
    const getadvertisement = async () => {
 //     try {
 //      const response = await fetch('https://purie.in/app/api/fetch_advertisement.php');
@@ -75,8 +74,10 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
              console.log("*****************************************************");
             //  setData(responseJson[0].image_url);
             setData(responseJson[0].image_url+ '?' + new Date());
+            setTopbar(responseJson[0].topBarContent);
              setModalVisible(true);
              setLoading(false);
+
       })
       .catch((error) => {
         //Error 
@@ -92,10 +93,48 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
  },[]);
 
 
+    const vegitableData = () => {
+        console.log('api call');
+
+        fetch(API_LINK+'fetch_home_product_vegitable',{
+            method : 'POST',
+            headers : {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+                mode: 'cors'
+            },
+            body: JSON.stringify({
+                
+                 })
+             })
+             .then((response) => response.json())
+            .then((responseData) => {
+                //   console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                //   Alert.alert("Sucesssssssssss")
+                console.log('HOMEDATA',responseData);
+                setmostSellingvegitable(responseData.vegitable_pro_data);
+               
+             })
+            .catch(function(error) {
+                        console.warn('There has been a problem with your fetch operation: ' + error);
+                         // ADD THIS THROW error
+                        //  Alert.alert("Errorrrrrrrrrrrrrr")
+                         setApiStatus(false);
+                          throw error;
+                        
+                        });
+
+                        if(!mostSellingvegitable && !categories && !wallet)
+                {
+                    setIsDataLoaded(true);
+                }
+                     
+    }
+
+
     const loadHomeData = () => {
-        
-       
         console.log('home data api call ');
+
 
         fetch(API_LINK+'fetch_home_product',{
             method : 'POST',
@@ -127,8 +166,6 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
                         });
                
                         
-
-
                         fetch(API_LINK+'subscribe_plan',{
                             method : 'POST',
                             headers : {
@@ -222,6 +259,7 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
                                                
                                                 console.log('HOME CAT DATA',responseData);
                                                 setCategories(responseData);
+                                                // setvegitableCategories(responseData);
                                                // set(true);
                                               
                                              // setApiStatus(false);
@@ -233,8 +271,7 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
                                                           throw error;
                                                         
                                                         });
-
-
+               
                 if(!mostSellingProducts && !categories && !wallet)
                 {
                     setIsDataLoaded(true);
@@ -246,6 +283,7 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
     if(!isDataLoaded)
     {
     loadHomeData();
+    vegitableData();
     }
 
     console.log('RD',reduxUser);
@@ -273,11 +311,18 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
         );
     }
 
+    const VegitableCategory = (item) => {
+        console.log('CAT VIEw');
+        return (
+            <CategoryListView item={item} />
+        );
+    }
     return (
         <SafeAreaView style={{ flex: 1, }}>
 {/* =========open Modal */}
 
 {/* <View style={modalstyle.centeredView}> */}
+   
     <View style={{flex:1}}>
       <Modal
         animationType="slide"
@@ -353,12 +398,14 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
         <View>
             <MemberHeader title="Purie"/> 
 
-            {/* <View style={{backgroundColor:'#000'}}>
-            <RenderHtml
+            <View style={{backgroundColor:'#D5E6E5',borderBottomLeftRadius:10,borderBottomRightRadius:10,marginBottom:10,justifyContent:'center'}}>
+            {/* <RenderHtml
       contentWidth={width}
       source={source}
-    />
-            </View> */}
+    /> */}
+            <Text style={{textAlign:'center',margin:10,color:'#000'}}>{Topbar.trim()}</Text>
+
+            </View>
             
             <ScrollView showsVerticalScrollIndicator={false}>
 
@@ -379,7 +426,8 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
                     </View>
                 :
                 <>
-        
+{/*=========== most poppular product =====================*/}
+            
                 <View style={styles.categorycontainer}>
                     <Text style={styles.catTitle}>Most Popular Category</Text>
                     <View style={styles.categoryrow}>
@@ -397,33 +445,50 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
                             numColumns={4}
                         />
                     }
-                        
-                        {/* <View style={styles.category}>
-                        <TouchableOpacity onPress={() => navigation.navigate('Category')}>
-                            <View>
-                            <Image style={styles.catImg} source={require('../assets/Dairy.png')} />
-                            </View>
-                            </TouchableOpacity>
-                            <Text style={styles.catName}>Dairy</Text>
-                        </View>
-                        <View style={styles.category}>
-                            <Image style={styles.catImg} source={require('../assets/Fruits.png')} />
-                            <Text style={styles.catName}>Fruits</Text>
-                        </View>
-                        <View style={styles.category}>
-                            <Image style={styles.catImg} source={require('../assets/Grocery.png')} />
-                            <Text style={styles.catName}>Grocery</Text>
-                        </View>
-                        <View style={styles.category}>
-                            <Image style={styles.catImg} source={require('../assets/Vegetables.png')} />
-                            <Text style={styles.catName}>Vegetables</Text>
-                        </View> */}
+                     
 
                     </View>
                 </View>
+
+{/* =============== vegitables =============== */}
+
+            <View style={styles.categorycontainer}>
+
+                <View style={{flex:1,flexDirection:'row'}}>
+                    <Text style={{flex:0.8,fontSize: 15,fontWeight: '400',color: '#087E8B'}}>Vegitable</Text>
+
+                    <Text style={{flex:0.3,fontSize: 15,fontWeight: '400',color: '#087E8B'}}>View more</Text>
+
+                </View>
+                   
+                    <View style={styles.categoryrow}>
+                    {
+                        (!mostSellingvegitable)
+                        ?
+                        <View style={{flexDirection: 'row', flex:1, justifyContent: 'center'}}>
+                            <ActivityIndicator size={20} color="black" />
+                        </View>
+                        :
+                        <FlatList
+                            data={mostSellingvegitable}
+                            keyExtractor={item => item.id}
+                            renderItem={VegitableCategory}
+                            // numColumns={4}
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                        />
+                    }
+                     
+
+                    </View>
+                </View>
+
+{/* ================================ */}
+
                 <View style={styles.products}>
                     <Text style={styles.catTitle}>Most Selling Products.</Text>
                 </View>
+                
                 <View style={{ marginLeft: 10, }}>
                     {
                         (!mostSellingProducts)
@@ -434,6 +499,29 @@ fetch('https://purie.in/app/api/fetch_advertisement.php',{
                         :
                     <FlatList
                         data={mostSellingProducts}
+                        keyExtractor={item => item.id}
+                        renderItem={renderProduct}
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                    /> 
+                    }    
+                    
+                </View>
+
+                <View style={styles.products}>
+                    <Text style={styles.catTitle}>Most Selling Vegitables.</Text>
+                </View>
+                
+                <View style={{ marginLeft: 10, }}>
+                    {
+                        (!mostSellingvegitable)
+                        ?
+                        <View>
+                        <ActivityIndicator size={20} color="black" />
+                    </View>
+                        :
+                    <FlatList
+                        data={mostSellingvegitable}
                         keyExtractor={item => item.id}
                         renderItem={renderProduct}
                         horizontal={true}
@@ -530,18 +618,16 @@ const styles = StyleSheet.create({
     categorycontainer: {
         width: '100%',
         borderRadius: 20,
-
         padding: 10,
     },
     catTitle: {
 
         fontSize: 15,
         fontWeight: '400',
-        color: '#087E8B'
+        color: '#087E8B',
+        
     },
     categoryrow: {
-
-       
         flexDirection: 'row',
         paddingTop: 0,
 
